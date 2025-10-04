@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Premium Virtual Tour</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui"
+    />
+    <style>
+      @-ms-viewport {
+        width: device-width;
+      }
+    </style>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- DaisyUI + Tailwind -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Marzipano Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/5.2.0/screenfull.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marzipano/0.10.2/marzipano.min.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="bg-base-100" data-theme="dark">
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen">
+      <div class="welcome-content">
+        <div class="logo-emblem">
+          <img
+            src="./img/amana.jpg"
+            class="rounded rounded-full"
+            alt=""
+            srcset=""
+          />
+        </div>
+        <div class="property-info">
+          <h1 class="property-name">2-Bedroom Flat</h1>
+          <p class="property-subtitle">Modoji, Katsina</p>
+        </div>
+        <button class="start-tour-btn" id="startTourBtn">
+          <i class="fas fa-play" style="margin-right: 8px"></i>
+          Start Tour
+        </button>
+      </div>
+    </div>
+
+    <!-- Main panorama container -->
+    <div id="pano"></div>
+
+    <!-- Top Navigation Bar -->
+    <div
+      class="navbar bg-base-300/80 backdrop-blur-sm absolute top-0 left-0 right-0 z-50"
+    >
+      <div class="navbar-start">
+        <!-- Scene List Toggle -->
+        <button id="sceneListToggle" class="btn btn-ghost btn-square">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+
+      <div class="navbar-center">
+        <!-- Scene Title -->
+        <h1 id="sceneName" class="text-xl font-semibold text-base-content">
+          Loading...
+        </h1>
+      </div>
+
+      <div class="navbar-end gap-2">
+        <!-- Autorotate Toggle -->
+        <button
+          id="autorotateToggle"
+          class="btn btn-ghost btn-square"
+          title="Toggle Autorotate"
+        >
+          <i class="fas fa-play text-xl" id="autorotateIcon"></i>
+        </button>
+
+        <!-- Fullscreen Toggle -->
+        <button
+          id="fullscreenToggle"
+          class="btn btn-ghost btn-square"
+          title="Fullscreen"
+        >
+          <i class="fas fa-expand text-xl" id="fullscreenIcon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scene List Sidebar -->
+    <div id="sceneList" class="fixed inset-0 z-40 hidden">
+      <div class="absolute inset-0 bg-black/50" id="sceneListOverlay"></div>
+      <div
+        class="bg-base-200/95 backdrop-blur-sm w-80 min-h-full p-4 absolute left-0 top-0 transform -translate-x-full transition-transform duration-300"
+        id="sceneListContent"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-base-content">Scenes</h2>
+          <button id="sceneListClose" class="btn btn-ghost btn-sm btn-square">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="space-y-3" id="scenesContainer">
+          <!-- Scene items will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- View Controls -->
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-30">
+      <div class="bg-base-300/80 backdrop-blur-sm rounded-full p-2">
+        <div class="flex items-center gap-2">
+          <!-- Zoom Out -->
+          <button
+            id="viewOut"
+            class="btn btn-ghost text-white btn-square btn-sm"
+          >
+            <i class="fas fa-search-minus text-lg"></i>
+          </button>
+
+          <!-- Direction Controls -->
+          <div class="grid grid-cols-3 gap-1">
+            <div></div>
+            <button
+              id="viewUp"
+              class="btn btn-ghost text-white btn-square btn-sm"
+            >
+              <i class="fas fa-chevron-up"></i>
+            </button>
+            <div></div>
+
+            <button
+              id="viewLeft"
+              class="btn btn-ghost text-white btn-square btn-sm"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="w-8 h-8"></div>
+            <button
+              id="viewRight"
+              class="btn btn-ghost text-white btn-square btn-sm"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div></div>
+            <button
+              id="viewDown"
+              class="btn btn-ghost text-white btn-square btn-sm"
+            >
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div></div>
+          </div>
+
+          <!-- Zoom In -->
+          <button
+            id="viewIn"
+            class="btn btn-ghost text-white btn-square btn-sm"
+          >
+            <i class="fas fa-search-plus text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+      <div class="modal-box">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg" id="modalTitle">Information</h3>
+          <button class="btn btn-sm btn-circle btn-ghost" id="modalClose">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="modalContent" class="prose max-w-none">
+          <!-- Modal content will be populated by JavaScript -->
+        </div>
+      </div>
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+    </div>
+
+    <!-- instruction animation Overlay -->
+    <div
+      id="instructionOverlay"
+      class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none transition-all duration-700 ease-in-out"
+    >
+      <div class="relative">
+        <!-- Animated gesture container -->
+        <div
+          class="bg-black/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-2xl"
+        >
+          <div class="flex items-center gap-4">
+            <!-- Animated hand gesture -->
+            <div class="relative">
+              <div class="hand-animation w-16 h-16 opacity-80"></div>
+              <!-- Swipe trail effect -->
+              <div
+                class="absolute inset-0 hand-animation w-16 h-16 opacity-40 blur-sm"
+              ></div>
+            </div>
+
+            <!-- Instruction text -->
+            <div class="text-white">
+              <h3 class="text-lg font-semibold mb-1">Drag to explore</h3>
+              <p class="text-white/80 text-sm">
+                Use your mouse or finger to look around
+              </p>
+            </div>
+          </div>
+
+          <!-- Optional close button (smaller, less intrusive) -->
+          <button
+            id="closeInstruction"
+            class="absolute -top-2 -right-2 w-6 h-6 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-all duration-200 pointer-events-auto"
+            title="Close hint"
+          >
+            <i class="fas fa-times text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Subtle pulsing glow effect -->
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl animate-pulse"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Floating Contact Button -->
+    <div id="floatingContact">
+      <div class="contact-options" id="contactOptions">
+        <a
+          href="https://wa.me/2348012345678"
+          class="contact-option whatsapp"
+          target="_blank"
+        >
+          <i class="fab fa-whatsapp"></i>
+          <div class="contact-option-text">
+            <div class="contact-option-label">WhatsApp</div>
+            <div class="contact-option-value">+234 801 234 5678</div>
+          </div>
+        </a>
+        <a href="tel:+2348012345678" class="contact-option phone">
+          <i class="fas fa-phone"></i>
+          <div class="contact-option-text">
+            <div class="contact-option-label">Call</div>
+            <div class="contact-option-value">+234 801 234 5678</div>
+          </div>
+        </a>
+        <a href="mailto:agent@example.com" class="contact-option email">
+          <i class="fas fa-envelope"></i>
+          <div class="contact-option-text">
+            <div class="contact-option-label">Email</div>
+            <div class="contact-option-value">agent@example.com</div>
+          </div>
+        </a>
+      </div>
+      <div class="contact-fab" id="contactFab">
+        <i class="fas fa-phone"></i>
+        Contact Agent
+      </div>
+    </div>
+
+    <script src="vendor/screenfull.min.js"></script>
+    <script src="vendor/bowser.min.js"></script>
+    <script src="vendor/marzipano.js"></script>
+
+    <script src="data.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
