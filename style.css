@@ -374,3 +374,41 @@ html {
     font-size: 50px;
   }
 }
+
+/* Responsive contact button */
+@media (max-width: 768px) {
+  #contactFab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #contactFab i {
+    margin-right: 0;
+    font-size: 20px;
+  }
+
+  /* Hide the "Contact Agent" text on small screens */
+  #contactFab {
+    font-size: 0;
+  }
+
+  #contactFab i {
+    font-size: 20px;
+  }
+}
+
+/* Optional: Make contact options stack better on mobile */
+@media (max-width: 768px) {
+  .contact-options {
+    right: 70px; /* Adjust if needed based on your layout */
+  }
+
+  .contact-option-text {
+    font-size: 12px;
+  }
+}
